@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:sales_tracker/src/blocs/repository.dart';
 import 'package:sales_tracker/src/pages/home_page.dart';
 import 'package:sales_tracker/src/pages/login_page.dart';
 
@@ -13,7 +14,7 @@ class SalesTrackerApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      home: StreamBuilder(
+      home: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.idTokenChanges(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
@@ -30,7 +31,10 @@ class SalesTrackerApp extends StatelessWidget {
           if (snapshot.data == null) {
             return LoginPage();
           } else {
-            return HomePage();
+            return Repository(
+              user: snapshot.data!,
+              child: HomePage(),
+            );
           }
         },
       ),

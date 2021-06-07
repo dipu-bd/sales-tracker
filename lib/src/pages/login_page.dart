@@ -28,7 +28,7 @@ class LoginPage extends StatelessWidget {
                 backgroundColor: MaterialStateProperty.all(Colors.amber),
               ),
             ),
-          )
+          ),
         ],
       ),
     );

@@ -1,14 +1,13 @@
 import 'package:sales_tracker/src/models/product.dart';
-import 'package:uuid/uuid.dart';
 
-class SaleRecord {
-  final String id;
-  final String productId;
-  final String productName;
-  final double unitBuyPrice;
-  final double unitSellPrice;
-  final int quantity;
-  final DateTime date;
+class SalesRecord {
+  final String? id;
+  late final String productId;
+  late final String productName;
+  late final double unitBuyPrice;
+  late final double unitSellPrice;
+  late final int quantity;
+  late final DateTime date;
 
   double get buyingPrice => quantity * unitBuyPrice;
 
@@ -16,28 +15,28 @@ class SaleRecord {
 
   double get profit => sellingPrice - buyingPrice;
 
-  SaleRecord({
+  SalesRecord({
     required Product product,
     required this.unitSellPrice,
     required this.quantity,
     required this.date,
-  })  : id = Uuid().v4(),
-        productId = product.id,
+  })  : id = null,
+        assert(product.id != null),
+        productId = product.id!,
         productName = product.name,
         unitBuyPrice = product.unitPrice;
 
-  SaleRecord.fromJsonMap(Map<String, dynamic> data)
-      : id = data['id'],
-        productId = data['product_id'],
-        productName = data['product_name'],
-        unitBuyPrice = data['buy_price'] ?? 0,
-        unitSellPrice = data['sell_price'] ?? 0,
-        quantity = data['quantity'] ?? 0,
-        date = DateTime.fromMillisecondsSinceEpoch(data['date'] ?? 0);
+  SalesRecord.fromJson(String id, Map<String, dynamic> data) : id = id {
+    productId = data['product_id'];
+    productName = data['product_name'];
+    unitBuyPrice = data['buy_price'] ?? 0;
+    unitSellPrice = data['sell_price'] ?? 0;
+    quantity = data['quantity'] ?? 0;
+    date = DateTime.fromMillisecondsSinceEpoch(data['date'] ?? 0);
+  }
 
-  Map<String, dynamic> toJsonMap() {
+  Map<String, dynamic> toJson() {
     Map<String, dynamic> data = {};
-    data['id'] = id;
     data['product_id'] = productId;
     data['product_name'] = productName;
     data['buy_price'] = unitBuyPrice;
@@ -49,9 +48,11 @@ class SaleRecord {
 
   @override
   bool operator ==(Object other) {
-    return other is SaleRecord && other.id == id;
+    return other is SalesRecord &&
+        other.id == id &&
+        other.productName == productName;
   }
 
   @override
-  int get hashCode => id.hashCode;
+  int get hashCode => [id, productName].hashCode;
 }

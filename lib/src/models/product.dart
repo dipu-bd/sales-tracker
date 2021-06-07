@@ -1,11 +1,9 @@
-import 'package:uuid/uuid.dart';
-
 class Product {
-  final String id;
-  final String name;
-  final double unitPrice;
-  final int quantity;
-  final DateTime date;
+  final String? id;
+  late final String name;
+  late final double unitPrice;
+  late final int quantity;
+  late final DateTime date;
 
   double get price => quantity * unitPrice;
 
@@ -14,18 +12,17 @@ class Product {
     required this.unitPrice,
     required this.quantity,
     required this.date,
-  }) : id = Uuid().v4();
+  }) : id = null;
 
-  Product.fromJsonMap(Map<String, dynamic> data)
-      : id = data['id'],
-        name = data['name'],
-        unitPrice = data['unit_price'],
-        quantity = data['quantity'],
-        date = DateTime.fromMillisecondsSinceEpoch(data['date'] ?? 0);
+  Product.fromJson(String id, Map<String, dynamic> data) : id = id {
+    name = data['name'];
+    unitPrice = data['unit_price'];
+    quantity = data['quantity'];
+    date = DateTime.fromMillisecondsSinceEpoch(data['date'] ?? 0);
+  }
 
-  Map<String, dynamic> toJsonMap() {
+  Map<String, dynamic> toJson() {
     Map<String, dynamic> data = {};
-    data['id'] = id;
     data['name'] = name;
     data['unit_price'] = unitPrice;
     data['quantity'] = quantity;
