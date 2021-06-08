@@ -1,5 +1,7 @@
 # sales_tracker
 
+[![Flutter Release APK](https://github.com/dipu-bd/sales_tracker/actions/workflows/release-apk.yml/badge.svg)](https://github.com/dipu-bd/sales_tracker/actions/workflows/release-apk.yml)
+
 A generic sales tracking application
 
 ## Getting Started
