@@ -1,4 +1,6 @@
+import 'package:intl/intl.dart';
 import 'package:sales_tracker/src/models/product.dart';
+import 'package:sales_tracker/src/utils/formatters.dart';
 
 class SalesRecord {
   final String? id;
@@ -55,4 +57,18 @@ class SalesRecord {
 
   @override
   int get hashCode => [id, productName].hashCode;
+}
+
+extension SalesRecordFormat on SalesRecord {
+  String get dateStr => DateFormat.yMMMd().format(date);
+
+  String get unitBuyPriceStr => formatCurrency(unitBuyPrice);
+
+  String get unitSellPriceStr => formatCurrency(unitSellPrice);
+
+  String get buyingPriceStr => formatCurrency(buyingPrice);
+
+  String get sellingPriceStr => formatCurrency(sellingPrice);
+
+  String get profitStr => formatCurrency(profit);
 }

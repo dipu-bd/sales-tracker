@@ -1,3 +1,5 @@
+import 'package:sales_tracker/src/utils/formatters.dart';
+
 class Product {
   final String? id;
   late final String name;
@@ -37,4 +39,10 @@ class Product {
 
   @override
   int get hashCode => id.hashCode;
+}
+
+extension ProductFormat on Product {
+  String get unitPriceStr => formatCurrency(unitPrice);
+
+  String get priceStr => formatCurrency(price);
 }

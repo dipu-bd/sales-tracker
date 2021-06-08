@@ -4,16 +4,19 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sales_tracker/src/blocs/repository.dart';
 import 'package:sales_tracker/src/models/product.dart';
+import 'package:sales_tracker/src/pages/report_page.dart';
+import 'package:sales_tracker/src/pages/widgets/error_message.dart';
 import 'package:sales_tracker/src/pages/widgets/product_item.dart';
 
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: buildAppBar(),
+      backgroundColor: Colors.grey[300],
+      appBar: buildAppBar(context),
       floatingActionButton: buildAddItemButton(context),
       body: StreamBuilder<List<Product>>(
-        stream: Repository.of(context).nonZeroProducts,
+        stream: Repository.of(context).allProducts,
         builder: (context, snapshot) {
           print(snapshot.connectionState);
           switch (snapshot.connectionState) {
@@ -25,9 +28,10 @@ class HomePage extends StatelessWidget {
             case ConnectionState.active:
             case ConnectionState.done:
               if (snapshot.hasError) {
-                return ErrorWidget.withDetails(
-                  message: 'Could not get product list',
-                  error: FlutterError("${snapshot.error}"),
+                return ErrorMessage(
+                  messageText: 'Could not get product list',
+                  errorDetails: snapshot.error,
+                  onDismiss: () => FirebaseAuth.instance.signOut(),
                 );
               }
               return buildListView(context, snapshot.requireData);
@@ -40,7 +44,6 @@ class HomePage extends StatelessWidget {
   Widget buildListView(BuildContext context, List<Product> products) {
     if (products.isEmpty) {
       return Container(
-        color: Color(0xffe0e0e0),
         padding: EdgeInsets.all(15),
         alignment: Alignment.center,
         child: Text(
@@ -53,12 +56,12 @@ class HomePage extends StatelessWidget {
     return ListView.separated(
       itemCount: products.length,
       padding: EdgeInsets.only(bottom: 100, top: 15),
-      separatorBuilder: (context, index) => Divider(height: 5),
-      itemBuilder: (context, index) => ProductItem(products[index]),
+      separatorBuilder: (context, index) => Container(height: 5),
+      itemBuilder: (context, index) => ProductItemTile(products[index]),
     );
   }
 
-  AppBar buildAppBar() {
+  AppBar buildAppBar(BuildContext context) {
     return AppBar(
       title: Text("Sales Tracker"),
       actions: [
@@ -67,7 +70,7 @@ class HomePage extends StatelessWidget {
           margin: EdgeInsets.all(10),
           child: ElevatedButton.icon(
             onPressed: () {
-              // TODO: open report page
+              ReportPage.display(context);
             },
             icon: Icon(Icons.history),
             label: Text('Report'),
