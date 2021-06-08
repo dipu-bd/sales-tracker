@@ -17,6 +17,8 @@ class SalesRecord {
 
   double get profit => sellingPrice - buyingPrice;
 
+  double get profitPerUnit => (sellingPrice - buyingPrice) / quantity;
+
   SalesRecord({
     required Product product,
     required this.unitSellPrice,
@@ -71,4 +73,6 @@ extension SalesRecordFormat on SalesRecord {
   String get sellingPriceStr => formatCurrency(sellingPrice);
 
   String get profitStr => formatCurrency(profit);
+
+  String get profitPerUnitStr => formatCurrency(profitPerUnit);
 }

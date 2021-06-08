@@ -1,10 +1,9 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:sales_tracker/src/blocs/repository.dart';
 import 'package:sales_tracker/src/models/product.dart';
-import 'package:sales_tracker/src/models/sales_record.dart';
+import 'package:sales_tracker/src/pages/widgets/product_form_dialog.dart';
+import 'package:sales_tracker/src/pages/widgets/sale_form_dialog.dart';
 
 class ProductItemTile extends StatelessWidget {
   final Product product;
@@ -25,6 +24,7 @@ class ProductItemTile extends StatelessWidget {
           leading: buildQuantity(),
           subtitle: buildSubtitle(),
           trailing: buildPrice(),
+          onLongPress: () => SaleFormDialog.display(context, product),
         ),
       ),
       actions: <Widget>[
@@ -44,17 +44,7 @@ class ProductItemTile extends StatelessWidget {
       caption: 'Sell',
       color: Colors.teal,
       icon: Icons.add_shopping_cart,
-      onTap: () {
-        // TODO: sell product
-        Repository.of(context).addSalesRecord(
-          SalesRecord(
-            product: product,
-            date: DateTime.now(),
-            quantity: Random.secure().nextInt(product.quantity) + 1,
-            unitSellPrice: Random.secure().nextDouble() * 10.0 + product.price,
-          ),
-        );
-      },
+      onTap: () => SaleFormDialog.display(context, product),
     );
   }
 
@@ -63,19 +53,7 @@ class ProductItemTile extends StatelessWidget {
       caption: 'Update',
       color: Colors.blueAccent,
       icon: Icons.edit,
-      onTap: () {
-        // TODO: update product
-        Repository.of(context).updateProduct(
-          product.id,
-          Product(
-            name: product.name,
-            date: product.date,
-            quantity: Random.secure().nextInt(100),
-            unitPrice: Random.secure().nextDouble() * 100.0,
-          ),
-        );
-        // TODO: update product
-      },
+      onTap: () => ProductFormDialog.display(context, product),
     );
   }
 
@@ -84,9 +62,7 @@ class ProductItemTile extends StatelessWidget {
       caption: 'Delete',
       color: Colors.redAccent,
       icon: Icons.delete,
-      onTap: () {
-        Repository.of(context).deleteProduct(product.id);
-      },
+      onTap: () => _confirmAndDelete(context),
     );
   }
 
@@ -126,6 +102,28 @@ class ProductItemTile extends StatelessWidget {
       style: TextStyle(
         fontWeight: FontWeight.w600,
         fontFamily: 'monospace',
+      ),
+    );
+  }
+
+  void _confirmAndDelete(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text('Delete ${product.name}?'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Repository.of(context).deleteProduct(product.id);
+              Navigator.of(context).pop();
+            },
+            child: Text('YES'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text('NO', style: TextStyle(fontWeight: FontWeight.bold)),
+          ),
+        ],
       ),
     );
   }

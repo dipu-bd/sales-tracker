@@ -1,10 +1,9 @@
-import 'dart:math';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sales_tracker/src/blocs/repository.dart';
 import 'package:sales_tracker/src/models/product.dart';
 import 'package:sales_tracker/src/pages/report_page.dart';
+import 'package:sales_tracker/src/pages/widgets/product_form_dialog.dart';
 import 'package:sales_tracker/src/pages/widgets/error_message.dart';
 import 'package:sales_tracker/src/pages/widgets/product_item.dart';
 
@@ -91,18 +90,7 @@ class HomePage extends StatelessWidget {
 
   FloatingActionButton buildAddItemButton(BuildContext context) {
     return FloatingActionButton(
-      onPressed: () {
-        // AddProductDialog.display(context); // TODO
-        print('adding new product...');
-        Repository.of(context).addProduct(
-          Product(
-            name: 'Dummy #' + (Random.secure().nextInt(1023)).toRadixString(16),
-            date: DateTime.now(),
-            quantity: Random.secure().nextInt(100),
-            unitPrice: Random.secure().nextDouble() * 100.0,
-          ),
-        );
-      },
+      onPressed: () => ProductFormDialog.display(context),
       child: Icon(Icons.add),
     );
   }
