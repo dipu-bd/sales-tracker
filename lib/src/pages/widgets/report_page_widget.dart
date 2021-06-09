@@ -31,7 +31,7 @@ class ReportPageWidget<T extends Report> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(titleText),
       ),

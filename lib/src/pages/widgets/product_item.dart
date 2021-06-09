@@ -25,6 +25,7 @@ class ProductItemTile extends StatelessWidget {
           subtitle: buildSubtitle(),
           trailing: buildPrice(),
           onLongPress: () => _saleProduct(context),
+          onTap: () => FocusScope.of(context).unfocus(),
         ),
       ),
       actions: <Widget>[
@@ -83,12 +84,11 @@ class ProductItemTile extends StatelessWidget {
     return Text.rich(
       TextSpan(
         children: [
-          TextSpan(text: 'Each unit costs '),
+          TextSpan(text: 'Added on '),
           TextSpan(
-            text: product.unitCostStr,
+            text: product.dateStr,
             style: TextStyle(
-              fontWeight: FontWeight.w600,
-              fontFamily: 'monospace',
+              fontWeight: FontWeight.bold,
             ),
           ),
         ],
@@ -96,12 +96,29 @@ class ProductItemTile extends StatelessWidget {
     );
   }
 
-  Text buildPrice() {
-    return Text(
-      product.costStr,
-      style: TextStyle(
-        fontWeight: FontWeight.w600,
-        fontFamily: 'monospace',
+  Widget buildPrice() {
+    return Container(
+      constraints: BoxConstraints(
+        minWidth: 75,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            product.costStr,
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Text(
+            '${product.quantity} × ${product.unitCostStr}',
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.grey,
+            ),
+          ),
+        ],
       ),
     );
   }
