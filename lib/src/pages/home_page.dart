@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:sales_tracker/src/blocs/repository.dart';
 import 'package:sales_tracker/src/models/product.dart';
 import 'package:sales_tracker/src/pages/report_page.dart';
-import 'package:sales_tracker/src/pages/widgets/product_form_dialog.dart';
 import 'package:sales_tracker/src/pages/widgets/error_message.dart';
+import 'package:sales_tracker/src/pages/widgets/home_page_drawer.dart';
+import 'package:sales_tracker/src/pages/widgets/product_form_dialog.dart';
 import 'package:sales_tracker/src/pages/widgets/product_item.dart';
 
 class HomePage extends StatelessWidget {
@@ -14,6 +15,9 @@ class HomePage extends StatelessWidget {
       backgroundColor: Colors.grey[300],
       appBar: buildAppBar(context),
       floatingActionButton: buildAddItemButton(context),
+      drawer: Drawer(
+        child: HomePageDrawer(),
+      ),
       body: StreamBuilder<List<Product>>(
         stream: Repository.of(context).allProducts,
         builder: (context, snapshot) {
@@ -64,26 +68,18 @@ class HomePage extends StatelessWidget {
     return AppBar(
       title: Text("Sales Tracker"),
       actions: [
-        Container(
-          height: 26,
-          margin: EdgeInsets.all(10),
-          child: ElevatedButton.icon(
-            onPressed: () {
-              ReportPage.display(context);
-            },
-            icon: Icon(Icons.history),
-            label: Text('Report'),
-            style: ButtonStyle(
-              elevation: MaterialStateProperty.all(0),
-            ),
+        ElevatedButton.icon(
+          onPressed: () => ReportPage.display(context),
+          icon: Icon(Icons.history),
+          label: Text('Report'),
+          style: ButtonStyle(
+            elevation: MaterialStateProperty.all(0),
           ),
         ),
-        IconButton(
-          onPressed: () {
-            FirebaseAuth.instance.signOut();
-          },
-          icon: Icon(Icons.logout),
-        ),
+        // IconButton(
+        //   onPressed: () => FirebaseAuth.instance.signOut(),
+        //   icon: Icon(Icons.logout),
+        // ),
       ],
     );
   }

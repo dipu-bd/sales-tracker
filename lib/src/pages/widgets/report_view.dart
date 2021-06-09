@@ -10,6 +10,10 @@ class ReportView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (report.totalItems == 0) {
+      return buildEmptyMessage();
+    }
+
     List<Widget> children = [];
     report.groups.forEach((date, salesList) {
       children.add(buildGroupHeader(date));
@@ -47,6 +51,17 @@ class ReportView extends StatelessWidget {
         top: 15.0,
         right: 15.0,
         bottom: 100.0,
+      ),
+    );
+  }
+
+  Widget buildEmptyMessage() {
+    return Container(
+      padding: EdgeInsets.all(15),
+      alignment: Alignment.center,
+      child: Text(
+        'No sales record was found',
+        textAlign: TextAlign.center,
       ),
     );
   }

@@ -47,7 +47,7 @@ class ProductFormDialog extends StatelessWidget {
           child: Column(
             children: [
               CircleAvatar(
-                radius: 48,
+                radius: 42,
                 backgroundColor: Colors.black12,
                 child: Icon(
                   addMode ? Icons.add : Icons.edit,
@@ -55,7 +55,7 @@ class ProductFormDialog extends StatelessWidget {
                   size: 48,
                 ),
               ),
-              SizedBox(height: 15),
+              SizedBox(height: 25),
               Builder(builder: buildDateInput),
               Builder(builder: buildNameInput),
               Builder(builder: buildUnitPriceInput),
@@ -89,7 +89,7 @@ class ProductFormDialog extends StatelessWidget {
           context: context,
           fieldLabelText: 'Date',
           firstDate: DateTime(year - 10),
-          lastDate: DateTime(year + 1).subtract(Duration(microseconds: 1)),
+          lastDate: DateTime(year + 10).subtract(Duration(microseconds: 1)),
           initialDate: DateTime.now(),
         ).then((DateTime? value) {
           if (value != null) {
@@ -123,7 +123,8 @@ class ProductFormDialog extends StatelessWidget {
       keyboardType: TextInputType.number,
       textInputAction: TextInputAction.next,
       decoration: InputDecoration(
-          labelText: 'Cost Per Unit', suffixIcon: Icon(Icons.attach_money)),
+          labelText: 'Cost Per Unit',
+      ),
       onEditingComplete: () {
         FocusScope.of(context).nextFocus();
       },

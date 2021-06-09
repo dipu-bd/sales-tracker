@@ -17,11 +17,15 @@ class ErrorMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(titleText),
+      title: Text(
+        titleText,
+        style: TextStyle(color: Colors.redAccent),
+      ),
       elevation: 5,
       actionsPadding: EdgeInsets.symmetric(horizontal: 10),
       content: Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
               Text(messageText),
             ] +
@@ -43,11 +47,12 @@ class ErrorMessage extends StatelessWidget {
 
   Widget buildErrorDetails() {
     return Container(
+      padding: EdgeInsets.all(10),
       child: Text(
         '$errorDetails',
         style: TextStyle(
+          fontSize: 12,
           fontFamily: 'monospaced',
-          fontSize: 11,
         ),
       ),
       decoration: BoxDecoration(

@@ -9,37 +9,36 @@ import 'package:sales_tracker/src/pages/widgets/report_view.dart';
 import 'package:sales_tracker/src/utils/report_generate.dart';
 
 class ReportPage extends StatelessWidget {
-  static Future<void> display(BuildContext context) {
+  static Future<void> display(BuildContext context) async {
     DateTime now = DateTime.now();
     DateTime startOfMonth = DateTime(now.year, now.month);
-    return showDateRangePicker(
+    DateTimeRange? range = await showDateRangePicker(
       context: context,
+      saveText: 'Generate Report',
       firstDate: DateTime(now.year - 10),
-      lastDate: DateTime(now.year + 1).subtract(Duration(microseconds: 1)),
+      lastDate: DateTime(now.year + 10).subtract(Duration(microseconds: 1)),
       initialDateRange: DateTimeRange(
         start: startOfMonth,
         end: DateTime.now(),
       ),
-      helpText: 'View Report',
-      saveText: 'Generate',
-      useRootNavigator: false,
-    ).then((range) {
-      if (range == null) return null;
-      DateTime start = range.start;
-      DateTime end = range.end;
-      return Navigator.of(context).push(
-        MaterialPageRoute(
-          maintainState: true,
-          fullscreenDialog: false,
-          builder: (_) => ReportPage(
-            startDate: DateTime(start.year, start.month, start.day),
-            endDate: DateTime(end.year, end.month, end.day)
-                .add(Duration(days: 1))
-                .subtract(Duration(milliseconds: 1)),
-          ),
+    );
+
+    if (range == null) return null;
+    DateTime start = range.start;
+    DateTime end = range.end;
+
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        maintainState: true,
+        fullscreenDialog: false,
+        builder: (_) => ReportPage(
+          startDate: DateTime(start.year, start.month, start.day),
+          endDate: DateTime(end.year, end.month, end.day)
+              .add(Duration(days: 1))
+              .subtract(Duration(milliseconds: 1)),
         ),
-      );
-    });
+      ),
+    );
   }
 
   final DateTime startDate;
@@ -54,6 +53,7 @@ class ReportPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[300],
       appBar: AppBar(
         title: Text('Report'),
       ),
@@ -82,17 +82,26 @@ class ReportPage extends StatelessWidget {
             }
             return Column(
               children: [
-                Expanded(child: ReportView(snapshot.data!)),
-                ListTile(
-                  tileColor: Colors.green,
-                  title: Text('Save as PDF'),
-                  trailing: Icon(Icons.save_alt),
-                  onTap: () => _generatePdf(context, snapshot.data!),
+                Expanded(
+                  child: ReportView(snapshot.data!),
                 ),
+                buildSaveAsPdfButton(context, snapshot.data!),
               ],
             );
         }
       },
+    );
+  }
+
+  Widget buildSaveAsPdfButton(BuildContext context, Report report) {
+    if (report.totalItems == 0) {
+      return Container();
+    }
+    return ListTile(
+      tileColor: Colors.green,
+      title: Text('Save as PDF'),
+      trailing: Icon(Icons.save_alt),
+      onTap: () => _generatePdf(context, report),
     );
   }
 

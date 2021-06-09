@@ -24,7 +24,7 @@ class ProductItemTile extends StatelessWidget {
           leading: buildQuantity(),
           subtitle: buildSubtitle(),
           trailing: buildPrice(),
-          onLongPress: () => SaleFormDialog.display(context, product),
+          onLongPress: () => _saleProduct(context),
         ),
       ),
       actions: <Widget>[
@@ -44,7 +44,7 @@ class ProductItemTile extends StatelessWidget {
       caption: 'Sell',
       color: Colors.teal,
       icon: Icons.add_shopping_cart,
-      onTap: () => SaleFormDialog.display(context, product),
+      onTap: () => _saleProduct(context),
     );
   }
 
@@ -104,6 +104,12 @@ class ProductItemTile extends StatelessWidget {
         fontFamily: 'monospace',
       ),
     );
+  }
+
+  void _saleProduct(BuildContext context) {
+    if (product.quantity > 0) {
+      SaleFormDialog.display(context, product);
+    }
   }
 
   void _confirmAndDelete(BuildContext context) {
