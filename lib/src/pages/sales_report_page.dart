@@ -1,50 +1,52 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sales_tracker/src/blocs/repository.dart';
 import 'package:sales_tracker/src/models/sales_report.dart';
-import 'package:sales_tracker/src/pages/widgets/abstract_report_page.dart';
+import 'package:sales_tracker/src/pages/widgets/report_page_widget.dart';
 import 'package:sales_tracker/src/pages/widgets/sales_report_view.dart';
 import 'package:sales_tracker/src/utils/generate_sales_report.dart';
 
-class SalesReportPage extends AbstractReportPage<SalesReport> {
-  static Future<void> display(BuildContext context) {
-    return showReportPage(
-      context: context,
-      saveButtonText: 'Generate Sales Report',
-      builder: (start, end) => SalesReportPage(start, end),
+class SalesReportPage extends StatelessWidget {
+  static Future<void> display(BuildContext context) async {
+    final navigator = Navigator.of(context, rootNavigator: true);
+
+    DateTimeRange? range = await selectDateRange(
+      context,
+      'Generate Sales Report',
+    );
+    if (range == null) return;
+
+    await navigator.push(
+      MaterialPageRoute(
+        maintainState: true,
+        fullscreenDialog: false,
+        builder: (context) => SalesReportPage(range.start, range.end),
+      ),
     );
   }
 
-  SalesReportPage(DateTime start, DateTime end)
-      : super(
-          startDate: start,
-          endDate: end,
-          titleText: 'Sales Report',
-          fetchFailureText: 'Could not fetch sales records',
-        );
+  final DateTime start;
+  final DateTime end;
+
+  SalesReportPage(this.start, this.end);
 
   @override
-  Stream<SalesReport> getReportStream(BuildContext context) {
-    return Repository.of(context).getSalesReport(startDate, endDate);
-  }
-
-  @override
-  Widget buildReportView(SalesReport report) {
-    return SalesReportView(report);
-  }
-
-  @override
-  Future<Uint8List> generateReport(SalesReport report) {
-    return generateSalesReport(report);
-  }
-
-  @override
-  String getReportFileName(SalesReport report) {
-    final formatter = DateFormat('yyyy-MM-dd');
-    final startStr = formatter.format(startDate);
-    final endStr = formatter.format(endDate);
-    return 'Sales_${startStr}_$endStr.pdf';
+  Widget build(BuildContext context) {
+    return ReportPageWidget<SalesReport>(
+      startDate: start,
+      endDate: end,
+      titleText: 'Sales Report',
+      fetchFailureText: 'Could not fetch sales records',
+      onGenerateReport: generateSalesReport,
+      onGetReportStream: () =>
+          Repository.of(context).getSalesReport(start, end),
+      reportViewBuilder: (report) => SalesReportView(report),
+      onGetReportFileName: (report) {
+        final formatter = DateFormat('yyyy-MM-dd');
+        final startStr = formatter.format(start);
+        final endStr = formatter.format(end);
+        return 'Sales_${startStr}_$endStr.pdf';
+      },
+    );
   }
 }

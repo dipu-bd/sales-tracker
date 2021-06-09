@@ -85,9 +85,8 @@ class _ProductListViewState extends State<ProductListView> {
     if (widget.products.length < 7) {
       return Container();
     }
-
-    return Container(
-      margin: EdgeInsets.all(10),
+    return Padding(
+      padding: EdgeInsets.all(8.0),
       child: TextField(
         controller: filterInput,
         textInputAction: TextInputAction.search,
@@ -95,11 +94,13 @@ class _ProductListViewState extends State<ProductListView> {
           filter = text.trim().toLowerCase();
           if (mounted) setState(() {});
         },
+        style: TextStyle(fontSize: 16),
         decoration: InputDecoration(
           isDense: true,
+          filled: true,
           fillColor: Colors.white,
-          labelText: 'Filter Items',
-          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+          hintText: 'Filter items',
+          border: OutlineInputBorder(),
           prefixIcon: Icon(Icons.search),
           suffixIcon: SizedBox(
             height: 24,
@@ -111,10 +112,6 @@ class _ProductListViewState extends State<ProductListView> {
                   ),
           ),
         ),
-      ),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(5),
       ),
     );
   }

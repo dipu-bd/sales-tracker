@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sales_tracker/src/pages/widgets/error_message.dart';
 
 Future<T?> showFutureLoading<T>({
+  bool useRootNavigator: true,
   required BuildContext context,
   required Future<T> future,
   required String loadingText,
@@ -9,9 +10,14 @@ Future<T?> showFutureLoading<T>({
 }) {
   return showDialog<T>(
     context: context,
+    useRootNavigator: useRootNavigator,
     builder: (_) => FutureBuilder<T?>(
       future: future,
       builder: (context, snapshot) {
+        final navigator = Navigator.of(
+          context,
+          rootNavigator: useRootNavigator,
+        );
         if (snapshot.connectionState != ConnectionState.done) {
           return Center(
             child: Card(
@@ -33,10 +39,10 @@ Future<T?> showFutureLoading<T>({
           return ErrorMessage(
             messageText: errorText,
             errorDetails: snapshot.error,
-            onDismiss: () => Navigator.of(context).pop(),
+            onDismiss: () => navigator.pop(),
           );
         }
-        Navigator.of(context).pop(snapshot.data!);
+        navigator.pop(snapshot.data!);
         return Container();
       },
     ),

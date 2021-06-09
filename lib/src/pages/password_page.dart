@@ -138,17 +138,7 @@ class _PasswordPageState extends State<PasswordPage> {
       to: ['dipu.sudipta@gmail.com'],
       cc: [user.email!],
       subject: 'Password for Sales Tracker',
-      body: [
-        'Hi,',
-        '<br><br>',
-        'Please send me the password for your Sales Tracker app!',
-        '<br><br>',
-        'My email is: <b>${user.email!}</b>',
-        '<br><br>',
-        'Thanks,',
-        '<br>',
-        '${user.displayName}',
-      ].join('\n'),
+      body: 'Please send me the password for Sales Tracker app. My email is "${user.email!}"',
     );
     await launch('$mailtoLink');
   }

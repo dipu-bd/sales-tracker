@@ -6,27 +6,27 @@ import 'package:sales_tracker/src/models/report.dart';
 import 'package:sales_tracker/src/pages/widgets/error_message.dart';
 import 'package:sales_tracker/src/pages/widgets/future_loading.dart';
 
-abstract class AbstractReportPage<T extends Report> extends StatelessWidget {
+class ReportPageWidget<T extends Report> extends StatelessWidget {
   final DateTime startDate;
   final DateTime endDate;
   final String titleText;
   final String fetchFailureText;
+  final Widget Function(T report) reportViewBuilder;
+  final Stream<T> Function() onGetReportStream;
+  final Future<Uint8List> Function(T report) onGenerateReport;
+  final String Function(T report) onGetReportFileName;
 
-  AbstractReportPage({
+  ReportPageWidget({
     Key? key,
     required this.startDate,
     required this.endDate,
     required this.titleText,
     required this.fetchFailureText,
+    required this.onGetReportFileName,
+    required this.onGetReportStream,
+    required this.reportViewBuilder,
+    required this.onGenerateReport,
   }) : super(key: key);
-
-  String getReportFileName(T report);
-
-  Stream<T> getReportStream(BuildContext context);
-
-  Widget buildReportView(T report);
-
-  Future<Uint8List> generateReport(T report);
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +36,7 @@ abstract class AbstractReportPage<T extends Report> extends StatelessWidget {
         title: Text(titleText),
       ),
       body: StreamBuilder<T>(
-        stream: getReportStream(context),
+        stream: onGetReportStream(),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
@@ -55,7 +55,7 @@ abstract class AbstractReportPage<T extends Report> extends StatelessWidget {
               }
               return Column(
                 children: [
-                  Expanded(child: buildReportView(snapshot.data!)),
+                  Expanded(child: reportViewBuilder(snapshot.data!)),
                   buildSaveAsPdfButton(context, snapshot.data!),
                 ],
               );
@@ -80,14 +80,14 @@ abstract class AbstractReportPage<T extends Report> extends StatelessWidget {
   void _generatePdf(BuildContext context, T report) async {
     Uint8List? result = await showFutureLoading(
       context: context,
-      future: generateReport(report),
+      future: onGenerateReport(report),
       loadingText: 'Generating PDF...',
       errorText: 'Failed to generate PDF',
     );
     print(result?.lengthInBytes);
     if (result == null) return;
 
-    final fileName = getReportFileName(report);
+    final fileName = onGetReportFileName(report);
     print(fileName);
 
     final filePath = await FlutterFileDialog.saveFile(
@@ -101,11 +101,10 @@ abstract class AbstractReportPage<T extends Report> extends StatelessWidget {
   }
 }
 
-Future<void> showReportPage({
-  required BuildContext context,
-  required String saveButtonText,
-  required Widget Function(DateTime start, DateTime end) builder,
-}) async {
+Future<DateTimeRange?> selectDateRange(
+  BuildContext context,
+  String saveButtonText,
+) async {
   DateTime now = DateTime.now();
   DateTime startOfMonth = DateTime(now.year, now.month);
   DateTimeRange? range = await showDateRangePicker(
@@ -118,21 +117,15 @@ Future<void> showReportPage({
       end: DateTime.now(),
     ),
   );
-
   if (range == null) return null;
-  DateTime start = range.start;
-  DateTime end = range.end;
 
-  await Navigator.of(context).push(
-    MaterialPageRoute(
-      maintainState: true,
-      fullscreenDialog: false,
-      builder: (context) => builder(
-        DateTime(start.year, start.month, start.day),
-        DateTime(end.year, end.month, end.day)
-            .add(Duration(days: 1))
-            .subtract(Duration(milliseconds: 1)),
-      ),
-    ),
-  );
+  var start = range.start;
+  start = DateTime(start.year, start.month, start.day);
+
+  var end = range.end;
+  end = DateTime(end.year, end.month, end.day)
+      .add(Duration(days: 1))
+      .subtract(Duration(milliseconds: 1));
+
+  return DateTimeRange(start: start, end: end);
 }
