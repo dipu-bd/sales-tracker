@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:rive/rive.dart';
-import 'package:sales_tracker/src/blocs/repository.dart';
 import 'package:sales_tracker/src/pages/widgets/error_message.dart';
 
 class LoginPage extends StatelessWidget {
@@ -63,5 +62,4 @@ class LoginPage extends StatelessWidget {
       );
     }
   }
-
 }

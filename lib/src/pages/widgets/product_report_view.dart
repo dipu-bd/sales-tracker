@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:sales_tracker/src/models/report.dart';
-import 'package:sales_tracker/src/models/sales_record.dart';
+import 'package:sales_tracker/src/models/product.dart';
+import 'package:sales_tracker/src/models/product_report.dart';
 
-class ReportView extends StatelessWidget {
-  final Report report;
+class ProductReportView extends StatelessWidget {
+  final ProductReport report;
 
-  ReportView(this.report, {Key? key}) : super(key: key);
+  ProductReportView(this.report, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class ReportView extends StatelessWidget {
     report.groups.forEach((date, salesList) {
       children.add(buildGroupHeader(date));
       children.add(Divider());
-      salesList.map(buildRecordItem).forEach((child) {
+      salesList.map(buildProductItem).forEach((child) {
         children.add(child);
         children.add(SizedBox(height: 10));
       });
@@ -29,19 +29,13 @@ class ReportView extends StatelessWidget {
       Divider(height: 1),
       SizedBox(height: 10),
       buildItemRow(
-          'Days in Report', '${report.groups.length}', Colors.grey[700]),
+          'Total Products', '${report.items.length}', Colors.grey[700]),
       SizedBox(height: 10),
-      buildItemRow('Items Sold', '${report.totalItems}', Colors.grey[700]),
-      SizedBox(height: 10),
-      Divider(height: 1),
-      SizedBox(height: 10),
-      buildItemRow('Selling Price', report.totalPriceStr, Colors.blueGrey[700]),
-      SizedBox(height: 10),
-      buildItemRow('Production Cost', report.totalCostStr, Colors.grey[700]),
+      buildItemRow('Total Quantity', '${report.totalItems}', Colors.grey[700]),
       SizedBox(height: 10),
       Divider(height: 1),
       SizedBox(height: 10),
-      buildItemRow('Total Profit', report.profitStr),
+      buildItemRow('Total Cost', report.totalCostStr, Colors.grey[700]),
     ];
 
     return ListView(
@@ -60,7 +54,7 @@ class ReportView extends StatelessWidget {
       padding: EdgeInsets.all(15),
       alignment: Alignment.center,
       child: Text(
-        'No sales record was found',
+        'No product was found',
         textAlign: TextAlign.center,
       ),
     );
@@ -87,11 +81,11 @@ class ReportView extends StatelessWidget {
     );
   }
 
-  Widget buildRecordItem(SalesRecord record) {
+  Widget buildProductItem(Product product) {
     return Row(
       children: [
         Text(
-          '${record.quantity}'.padLeft(3, ' '),
+          '${product.quantity}'.padLeft(3, ' '),
           style: TextStyle(
             fontFamily: 'monospace',
             fontSize: 14,
@@ -102,7 +96,7 @@ class ReportView extends StatelessWidget {
         Text(' × '),
         Expanded(
           child: Text(
-            '${record.productName} @ ${record.unitSellPriceStr} per unit',
+            '${product.name} @ ${product.unitCostStr}',
             softWrap: true,
             style: TextStyle(
               fontSize: 12,
@@ -112,7 +106,7 @@ class ReportView extends StatelessWidget {
         ),
         Text(' = '),
         Text(
-          record.sellingPriceStr.padRight(10, ' '),
+          product.costStr.padRight(10, ' '),
           style: TextStyle(
             fontFamily: 'monospace',
             fontSize: 12,

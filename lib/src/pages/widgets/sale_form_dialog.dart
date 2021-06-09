@@ -103,7 +103,7 @@ class SaleFormDialog extends StatelessWidget {
       textInputAction: TextInputAction.next,
       decoration: InputDecoration(
         labelText: 'Selling Price Per Unit',
-        helperText: 'Cost per unit is ${product.unitPriceStr}',
+        helperText: 'Cost per unit is ${product.unitCostStr}',
       ),
       onEditingComplete: () {
         FocusScope.of(context).nextFocus();

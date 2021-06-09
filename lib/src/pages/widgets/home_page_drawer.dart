@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sales_tracker/src/blocs/repository.dart';
-import 'package:sales_tracker/src/pages/report_page.dart';
+import 'package:sales_tracker/src/pages/sales_report_page.dart';
 import 'package:sales_tracker/src/pages/widgets/product_form_dialog.dart';
 
 class HomePageDrawer extends StatelessWidget {
@@ -31,7 +31,9 @@ class HomePageDrawer extends StatelessWidget {
               SizedBox(height: 5),
               Builder(builder: buildAddButton),
               SizedBox(height: 5),
-              Builder(builder: buildReportButton),
+              Builder(builder: buildProductReportButton),
+              SizedBox(height: 5),
+              Builder(builder: buildSalesReportButton),
               Divider(),
               Builder(builder: buildResetButton),
               Spacer(),
@@ -105,17 +107,32 @@ class HomePageDrawer extends StatelessWidget {
     );
   }
 
-  Widget buildReportButton(BuildContext context) {
+  Widget buildProductReportButton(BuildContext context) {
     return ListTile(
       tileColor: Colors.grey[100],
-      title: Text('View Report'),
+      title: Text('Product Report'),
       leading: Icon(Icons.history),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(5),
       ),
       onTap: () {
         Navigator.of(context).pop();
-        ReportPage.display(context);
+        SalesReportPage.display(context);
+      },
+    );
+  }
+
+  Widget buildSalesReportButton(BuildContext context) {
+    return ListTile(
+      tileColor: Colors.grey[100],
+      title: Text('Sales Report'),
+      leading: Icon(Icons.history_edu),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(5),
+      ),
+      onTap: () {
+        Navigator.of(context).pop();
+        SalesReportPage.display(context);
       },
     );
   }

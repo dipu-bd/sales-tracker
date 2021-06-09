@@ -3,8 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sales_tracker/src/blocs/global_bloc.dart';
 import 'package:sales_tracker/src/models/product.dart';
-import 'package:sales_tracker/src/models/report.dart';
+import 'package:sales_tracker/src/models/product_report.dart';
 import 'package:sales_tracker/src/models/sales_record.dart';
+import 'package:sales_tracker/src/models/sales_report.dart';
 
 class Repository {
   static Repository of(BuildContext context) =>
@@ -70,10 +71,10 @@ class Repository {
 
   /// Get all products
   Stream<List<Product>> get allProducts {
-    return _products.snapshots().asyncMap(_mapProductResult);
+    return _products.snapshots().asyncMap(_collectProducts);
   }
 
-  static List<Product> _mapProductResult(QuerySnapshot<Product> event) {
+  static List<Product> _collectProducts(QuerySnapshot<Product> event) {
     var result = event.docs.fold<List<Product>>([], (list, snapshot) {
       return list..add(snapshot.data());
     });
@@ -81,23 +82,43 @@ class Repository {
     return result;
   }
 
+  /// Get list of products between start and stop dates (inclusive)
+  Stream<ProductReport> getProductReport(DateTime start, DateTime stop) =>
+      _products
+          .where(
+            'date',
+            isGreaterThanOrEqualTo: start.millisecondsSinceEpoch,
+            isLessThanOrEqualTo: stop.millisecondsSinceEpoch,
+          )
+          .snapshots()
+          .map(_collectProducts)
+          .map((products) => ProductReport(
+                startTime: start,
+                endTime: stop,
+                products: products,
+              ));
+
   /// Get list of sales between start and stop dates (inclusive)
-  Stream<Report> getSales(DateTime start, DateTime stop) => _sales
+  Stream<SalesReport> getSalesReport(DateTime start, DateTime stop) => _sales
       .where(
         'date',
         isGreaterThanOrEqualTo: start.millisecondsSinceEpoch,
         isLessThanOrEqualTo: stop.millisecondsSinceEpoch,
       )
       .snapshots()
-      .asyncMap(_mapSalesResult);
+      .map(_collectSalesRecords)
+      .map((sales) => SalesReport(
+            startTime: start,
+            endTime: stop,
+            sales: sales,
+          ));
 
-  static Report _mapSalesResult(QuerySnapshot<SalesRecord> event) {
-    return Report(
-      event.docs.fold(
-        <SalesRecord>[],
-        (list, snapshot) => list..add(snapshot.data()),
-      ),
-    );
+  static List<SalesRecord> _collectSalesRecords(
+      QuerySnapshot<SalesRecord> event) {
+    var result = event.docs.fold<List<SalesRecord>>([], (list, snapshot) {
+      return list..add(snapshot.data());
+    });
+    return result;
   }
 
   Future<DocumentReference<Product>> addProduct(Product product) {

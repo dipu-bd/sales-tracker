@@ -1,15 +1,14 @@
-import 'package:intl/intl.dart';
+import 'package:sales_tracker/src/models/item.dart';
 import 'package:sales_tracker/src/models/product.dart';
 import 'package:sales_tracker/src/utils/formatters.dart';
 
-class SalesRecord {
-  final String? id;
+export 'package:sales_tracker/src/models/item.dart';
+
+class SalesRecord extends Item {
   late final String productId;
   late final String productName;
   late final double unitBuyPrice;
   late final double unitSellPrice;
-  late final int quantity;
-  late final DateTime date;
 
   double get buyingPrice => quantity * unitBuyPrice;
 
@@ -22,48 +21,36 @@ class SalesRecord {
   SalesRecord({
     required Product product,
     required this.unitSellPrice,
-    required this.quantity,
-    required this.date,
-  })  : id = null,
-        assert(product.id != null),
+    required int quantity,
+    required DateTime date,
+  })  : assert(product.id != null),
         productId = product.id!,
         productName = product.name,
-        unitBuyPrice = product.unitPrice;
+        unitBuyPrice = product.unitCost,
+        super(
+          date: date,
+          quantity: quantity,
+        );
 
-  SalesRecord.fromJson(String id, Map<String, dynamic> data) : id = id {
-    productId = data['product_id'];
-    productName = data['product_name'];
-    unitBuyPrice = data['buy_price'] ?? 0;
-    unitSellPrice = data['sell_price'] ?? 0;
-    quantity = data['quantity'] ?? 0;
-    date = DateTime.fromMillisecondsSinceEpoch(data['date'] ?? 0);
+  SalesRecord.fromJson(String id, Map<String, dynamic> data)
+      : super.fromJson(id, data) {
+    productId = data.remove('product_id');
+    productName = data.remove('product_name');
+    unitBuyPrice = data.remove('buy_price');
+    unitSellPrice = data.remove('sell_price');
   }
 
   Map<String, dynamic> toJson() {
-    Map<String, dynamic> data = {};
+    final data = super.toJson();
     data['product_id'] = productId;
     data['product_name'] = productName;
     data['buy_price'] = unitBuyPrice;
     data['sell_price'] = unitSellPrice;
-    data['quantity'] = quantity;
-    data['date'] = date.millisecondsSinceEpoch;
     return data;
   }
-
-  @override
-  bool operator ==(Object other) {
-    return other is SalesRecord &&
-        other.id == id &&
-        other.productName == productName;
-  }
-
-  @override
-  int get hashCode => [id, productName].hashCode;
 }
 
 extension SalesRecordFormat on SalesRecord {
-  String get dateStr => DateFormat.yMMMd().format(date);
-
   String get unitBuyPriceStr => formatCurrency(unitBuyPrice);
 
   String get unitSellPriceStr => formatCurrency(unitSellPrice);

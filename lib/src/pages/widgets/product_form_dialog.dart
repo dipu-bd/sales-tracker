@@ -28,7 +28,7 @@ class ProductFormDialog extends StatelessWidget {
 
   ProductFormDialog(this.product) {
     nameInput = TextEditingController(text: product?.name);
-    unitPriceInput = TextEditingController(text: product?.unitPrice.toString());
+    unitPriceInput = TextEditingController(text: product?.unitCost.toString());
     quantityInput = TextEditingController(text: product?.quantity.toString());
     dateInput = TextEditingController(
       text: product?.date != null ? _dateFormatter.format(product!.date) : '',
@@ -190,7 +190,7 @@ class ProductFormDialog extends StatelessWidget {
     final newProduct = Product(
       name: name,
       date: date,
-      unitPrice: unitPrice,
+      unitCost: unitPrice,
       quantity: quantity,
     );
 

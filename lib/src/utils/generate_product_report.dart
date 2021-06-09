@@ -3,17 +3,18 @@ import 'dart:typed_data';
 import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:sales_tracker/src/models/report.dart';
-import 'package:sales_tracker/src/models/sales_record.dart';
+import 'package:sales_tracker/src/models/product_report.dart';
+import 'package:sales_tracker/src/models/product.dart';
 
-Future<Uint8List> generateReport(Report report) async {
+Future<Uint8List> generateProductReport(ProductReport report) async {
   final regularFont = await rootBundle.load('lib/res/RobotoSlab-Regular.ttf');
   final boldFont = await rootBundle.load('lib/res/RobotoSlab-Bold.ttf');
 
   final pdf = pw.Document(
     compress: true,
-    producer: 'Sales Tracker',
-    subject: 'Report_${report.startTimeMinStr}_${report.endTimeMinStr}',
+    title: 'Product Report',
+    subject: 'Sales Tracker',
+    producer: 'https://github.com/dipu-bd/sales_tracker',
     theme: pw.ThemeData.withFont(
       base: pw.Font.ttf(regularFont),
       bold: pw.Font.ttf(boldFont),
@@ -35,15 +36,14 @@ Future<Uint8List> generateReport(Report report) async {
             thickness: 1,
             color: PdfColors.grey300,
           ),
-          buildSummaryItem('Total Items', '${report.totalItems} ps.'),
-          buildSummaryItem('Production Cost', report.totalCostStr),
-          buildSummaryItem('Selling Price', report.totalPriceStr),
+          buildSummaryItem('Total Products', '${report.items.length} ps.'),
+          buildSummaryItem('Total Item Quantity', '${report.totalItems} ps.'),
           pw.Divider(
             height: 20,
             thickness: 1,
             color: PdfColors.grey300,
           ),
-          buildSummaryItem('Net Profit', report.profitStr),
+          buildSummaryItem('Total Cost', report.totalCostStr),
         ];
       },
       header: (context) {
@@ -68,31 +68,29 @@ Future<Uint8List> generateReport(Report report) async {
   return data;
 }
 
-pw.Widget buildSalesTable(Report report) {
+pw.Widget buildSalesTable(ProductReport report) {
   return pw.Table(
     children: [
       pw.TableRow(
         children: [
           buildHeadCell('Date'),
           buildHeadCell('Item Name'),
+          buildHeadCell('Unit Cost'),
           buildHeadCell('Quantity'),
-          buildHeadCell('Cost'),
-          buildHeadCell('Price'),
-          buildHeadCell('Profit'),
+          buildHeadCell('Total Cost'),
         ],
         decoration: pw.BoxDecoration(
           color: PdfColors.grey200,
         ),
       ),
-      ...report.sales.map(
-        (record) => pw.TableRow(
+      ...report.items.map(
+        (product) => pw.TableRow(
           children: [
-            buildItemCell(record.dateStr),
-            buildItemCell(record.productName),
-            buildItemCell('${record.quantity}'),
-            buildItemCell(record.buyingPriceStr),
-            buildItemCell(record.sellingPriceStr),
-            buildItemCell(record.profitStr),
+            buildItemCell(product.dateStr),
+            buildItemCell(product.name),
+            buildItemCell(product.unitCostStr),
+            buildItemCell(product.quantityStr),
+            buildItemCell(product.costStr),
           ],
         ),
       ),
@@ -100,7 +98,7 @@ pw.Widget buildSalesTable(Report report) {
   );
 }
 
-pw.Widget buildHeader(Report report) {
+pw.Widget buildHeader(ProductReport report) {
   return pw.Container(
     padding: pw.EdgeInsets.symmetric(vertical: 10, horizontal: 5),
     margin: pw.EdgeInsets.only(bottom: 20),

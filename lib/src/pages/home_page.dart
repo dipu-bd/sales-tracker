@@ -2,7 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sales_tracker/src/blocs/repository.dart';
 import 'package:sales_tracker/src/models/product.dart';
-import 'package:sales_tracker/src/pages/report_page.dart';
+import 'package:sales_tracker/src/pages/product_report_page.dart';
+import 'package:sales_tracker/src/pages/sales_report_page.dart';
 import 'package:sales_tracker/src/pages/widgets/error_message.dart';
 import 'package:sales_tracker/src/pages/widgets/home_page_drawer.dart';
 import 'package:sales_tracker/src/pages/widgets/product_form_dialog.dart';
@@ -44,30 +45,41 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  AppBar buildAppBar(BuildContext context) {
-    return AppBar(
-      title: Text("Sales Tracker"),
-      actions: [
-        ElevatedButton.icon(
-          onPressed: () => ReportPage.display(context),
-          icon: Icon(Icons.history),
-          label: Text('Report'),
-          style: ButtonStyle(
-            elevation: MaterialStateProperty.all(0),
-          ),
-        ),
-        // IconButton(
-        //   onPressed: () => FirebaseAuth.instance.signOut(),
-        //   icon: Icon(Icons.logout),
-        // ),
-      ],
-    );
-  }
-
   FloatingActionButton buildAddItemButton(BuildContext context) {
     return FloatingActionButton(
       onPressed: () => ProductFormDialog.display(context),
       child: Icon(Icons.add),
+    );
+  }
+
+  AppBar buildAppBar(BuildContext context) {
+    return AppBar(
+      title: Text("Sales Tracker"),
+      actions: [
+        PopupMenuButton<int>(
+          icon: Icon(Icons.history),
+          itemBuilder: (context) => [
+            PopupMenuItem(
+              value: 1,
+              child: Text('Product Report'),
+            ),
+            PopupMenuItem(
+              value: 2,
+              child: Text('Sales Report'),
+            ),
+          ],
+          onSelected: (index) {
+            switch (index) {
+              case 1:
+                ProductReportPage.display(context);
+                break;
+              case 2:
+                SalesReportPage.display(context);
+                break;
+            }
+          },
+        ),
+      ],
     );
   }
 }
