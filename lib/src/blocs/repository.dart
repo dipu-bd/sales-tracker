@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:crypto/crypto.dart' show sha256;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sales_tracker/src/blocs/global_bloc.dart';
@@ -29,8 +28,43 @@ class Repository {
               SalesRecord.fromJson(snap.id, snap.data()!),
           toFirestore: (model, _) => model.toJson(),
         );
-    _saveUserData(_userDoc, user);
+    _saveUserData();
   }
+
+  void _saveUserData() async {
+    final snapshot = await _userDoc.get();
+    if (!snapshot.exists) {
+      await _userDoc.set({
+        'uid': user.uid,
+        'email': user.email,
+        'displayName': user.displayName,
+        'phoneNumber': user.phoneNumber,
+        'photoURL': user.photoURL,
+        'tenantId': user.tenantId,
+        'creationTime': user.metadata.creationTime?.millisecondsSinceEpoch,
+        'lastSignInTime': user.metadata.lastSignInTime?.millisecondsSinceEpoch,
+        'isAnonymous': user.isAnonymous,
+      });
+    }
+  }
+
+  String _generatePassword() {
+    return user.uid.substring(0, 6);
+  }
+
+  Future<void> registerAsVerified(String password) {
+    if (_generatePassword() != password) {
+      throw Exception('Password did not match');
+    }
+    return _userDoc.update({'password': password});
+  }
+
+  /// Get user verified status stream
+  Stream<bool> get userVerified => _userDoc.parent
+      .where('uid', isEqualTo: user.uid)
+      .where('password', isEqualTo: _generatePassword())
+      .snapshots()
+      .map((event) => event.size == 1 && event.docs.first.id == user.uid);
 
   /// Get all products
   Stream<List<Product>> get allProducts =>
@@ -69,41 +103,6 @@ class Repository {
     );
   }
 
-  void _saveUserData(DocumentReference doc, User user) {
-    doc.update({
-      'uid': user.uid,
-      'email': user.email,
-      'displayName': user.displayName,
-      'phoneNumber': user.phoneNumber,
-      'photoURL': user.photoURL,
-      'tenantId': user.tenantId,
-      'creationTime': user.metadata.creationTime?.millisecondsSinceEpoch,
-      'lastSignInTime': user.metadata.lastSignInTime?.millisecondsSinceEpoch,
-      'isAnonymous': user.isAnonymous,
-    });
-  }
-
-  Future<bool> matchPassword(String password) async {
-    final hash = sha256.convert(password.codeUnits).toString();
-    final snapshot = await _userDoc.get();
-    final data = snapshot.data() ?? {};
-    if (!data.containsKey('password')) {
-      return false;
-    }
-    return hash == data['password'];
-  }
-
-  Future<void> savePassword(String oldPassword, String newPassword) async {
-    final oldHash = sha256.convert(oldPassword.codeUnits).toString();
-    final newHash = sha256.convert(newPassword.codeUnits).toString();
-    final snapshot = await _userDoc.get();
-    final data = snapshot.data() ?? {};
-    if (data.containsKey('password') && oldHash != data['password']) {
-      throw Exception('Password mismatch');
-    }
-    await _userDoc.update({'password': newHash});
-  }
-
   Future<DocumentReference<Product>> addProduct(Product product) {
     return _products.add(product);
   }
@@ -132,7 +131,6 @@ class Repository {
   }
 
   Future<void> clearAllData() async {
-    await _userDoc.delete();
     final sales = await _sales.get();
     final products = await _products.get();
     await Future.wait(products.docs.map((doc) => doc.reference.delete()));
