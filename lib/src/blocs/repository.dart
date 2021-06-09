@@ -60,21 +60,18 @@ class Repository {
   }
 
   /// Get user verified status stream
-  Stream<bool> get userVerified => _userDoc.parent
-      .where('uid', isEqualTo: user.uid)
-      .where('password', isEqualTo: _generatePassword())
-      .snapshots()
-      .map((event) => event.size == 1 && event.docs.first.id == user.uid);
+  Stream<bool> get userVerified {
+    return _userDoc.parent
+        .where('uid', isEqualTo: user.uid)
+        .where('password', isEqualTo: _generatePassword())
+        .snapshots()
+        .map((event) => event.size == 1 && event.docs.first.id == user.uid);
+  }
 
   /// Get all products
-  Stream<List<Product>> get allProducts =>
-      _products.snapshots().asyncMap(_mapProductResult);
-
-  /// Get products with quantity > 0
-  Stream<List<Product>> get nonZeroProducts => _products
-      .where('quantity', isGreaterThan: 0)
-      .snapshots()
-      .asyncMap(_mapProductResult);
+  Stream<List<Product>> get allProducts {
+    return _products.snapshots().asyncMap(_mapProductResult);
+  }
 
   static List<Product> _mapProductResult(QuerySnapshot<Product> event) {
     var result = event.docs.fold<List<Product>>([], (list, snapshot) {

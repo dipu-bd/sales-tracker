@@ -6,7 +6,7 @@ import 'package:sales_tracker/src/pages/report_page.dart';
 import 'package:sales_tracker/src/pages/widgets/error_message.dart';
 import 'package:sales_tracker/src/pages/widgets/home_page_drawer.dart';
 import 'package:sales_tracker/src/pages/widgets/product_form_dialog.dart';
-import 'package:sales_tracker/src/pages/widgets/product_item.dart';
+import 'package:sales_tracker/src/pages/widgets/product_list.dart';
 
 class HomePage extends StatelessWidget {
   @override
@@ -37,30 +37,10 @@ class HomePage extends StatelessWidget {
                   onDismiss: () => FirebaseAuth.instance.signOut(),
                 );
               }
-              return buildListView(context, snapshot.requireData);
+              return ProductListView(snapshot.requireData);
           }
         },
       ),
-    );
-  }
-
-  Widget buildListView(BuildContext context, List<Product> products) {
-    if (products.isEmpty) {
-      return Container(
-        padding: EdgeInsets.all(15),
-        alignment: Alignment.center,
-        child: Text(
-          'Click on the + button below to add new items',
-          style: Theme.of(context).textTheme.subtitle1,
-          textAlign: TextAlign.center,
-        ),
-      );
-    }
-    return ListView.separated(
-      itemCount: products.length,
-      padding: EdgeInsets.only(bottom: 100, top: 15),
-      separatorBuilder: (context, index) => Container(height: 5),
-      itemBuilder: (context, index) => ProductItemTile(products[index]),
     );
   }
 
