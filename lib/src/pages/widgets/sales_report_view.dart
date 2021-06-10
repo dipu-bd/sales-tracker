@@ -10,7 +10,7 @@ class SalesReportView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (report.totalItems == 0) {
+    if (report.totalUnits == 0) {
       return buildEmptyMessage();
     }
 
@@ -30,7 +30,7 @@ class SalesReportView extends StatelessWidget {
       SizedBox(height: 10),
       buildItemRow('Total Sales', '${report.items.length}', Colors.grey[700]),
       SizedBox(height: 10),
-      buildItemRow('Items Sold', '${report.totalItems}', Colors.grey[700]),
+      buildItemRow('Units Sold', '${report.totalUnits}', Colors.grey[700]),
       SizedBox(height: 10),
       Divider(height: 1),
       SizedBox(height: 10),
@@ -40,7 +40,7 @@ class SalesReportView extends StatelessWidget {
       SizedBox(height: 10),
       Divider(height: 1),
       SizedBox(height: 10),
-      buildItemRow('Total Profit', report.profitStr),
+      buildItemRow('Net Profit', report.profitStr),
     ];
 
     return ListView(
@@ -101,7 +101,7 @@ class SalesReportView extends StatelessWidget {
         Text(' × '),
         Expanded(
           child: Text(
-            '${record.productName} @ ${record.unitSellPriceStr}',
+            '${record.productName} @ ${record.unitPriceStr}',
             softWrap: true,
             style: TextStyle(
               fontSize: 12,
@@ -111,7 +111,7 @@ class SalesReportView extends StatelessWidget {
         ),
         Text(' = '),
         Text(
-          record.sellingPriceStr.padRight(10, ' '),
+          record.totalPriceStr.padRight(10, ' '),
           style: TextStyle(
             fontFamily: 'monospace',
             fontSize: 12,

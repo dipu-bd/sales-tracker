@@ -6,8 +6,8 @@ import 'package:sales_tracker/src/models/product.dart';
 import 'package:sales_tracker/src/pages/widgets/error_message.dart';
 
 class ProductFormDialog extends StatelessWidget {
-  static void display(BuildContext context, [Product? product]) {
-    Navigator.of(context).push(
+  static Future<void> display(BuildContext context, [Product? product]) {
+    return Navigator.of(context, rootNavigator: true).push(
       MaterialPageRoute(
         maintainState: false,
         fullscreenDialog: true,
@@ -31,7 +31,7 @@ class ProductFormDialog extends StatelessWidget {
     unitPriceInput = TextEditingController(text: product?.unitCost.toString());
     quantityInput = TextEditingController(text: product?.quantity.toString());
     dateInput = TextEditingController(
-      text: product?.date != null ? _dateFormatter.format(product!.date) : '',
+      text: _dateFormatter.format(product?.date ?? DateTime.now()),
     );
   }
 
@@ -119,11 +119,12 @@ class ProductFormDialog extends StatelessWidget {
 
   Widget buildUnitPriceInput(BuildContext context) {
     return TextField(
+      enabled: product == null || product!.unitsSold == 0,
       controller: unitPriceInput,
       keyboardType: TextInputType.number,
       textInputAction: TextInputAction.next,
       decoration: InputDecoration(
-          labelText: 'Cost Per Unit',
+        labelText: 'Cost Per Unit',
       ),
       onEditingComplete: () {
         FocusScope.of(context).nextFocus();
@@ -142,6 +143,7 @@ class ProductFormDialog extends StatelessWidget {
 
   Widget buildQuantityInput(BuildContext context) {
     return TextField(
+      enabled: product == null || product!.unitsSold == 0,
       controller: quantityInput,
       keyboardType: TextInputType.number,
       textInputAction: TextInputAction.next,

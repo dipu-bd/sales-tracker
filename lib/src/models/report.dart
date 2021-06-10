@@ -6,7 +6,7 @@ class Report<T extends Item> {
   final DateTime endTime;
   final List<T> items;
   final Map<DateTime, List<T>> groups = {};
-  late final int totalItems;
+  late final int totalUnits;
 
   Report({
     required this.items,
@@ -28,7 +28,7 @@ class Report<T extends Item> {
       groups.putIfAbsent(group, () => []);
       groups[group]!.add(item);
     }
-    totalItems = total;
+    totalUnits = total;
   }
 }
 

@@ -10,7 +10,7 @@ class ProductReportView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (report.totalItems == 0) {
+    if (report.totalUnits == 0) {
       return buildEmptyMessage();
     }
 
@@ -28,10 +28,9 @@ class ProductReportView extends StatelessWidget {
     children += [
       Divider(height: 1),
       SizedBox(height: 10),
-      buildItemRow(
-          'Total Products', '${report.items.length}', Colors.grey[700]),
+      buildItemRow('Products', '${report.items.length}', Colors.grey[700]),
       SizedBox(height: 10),
-      buildItemRow('Total Quantity', '${report.totalItems}', Colors.grey[700]),
+      buildItemRow('Total Units', '${report.totalUnits}', Colors.grey[700]),
       SizedBox(height: 10),
       Divider(height: 1),
       SizedBox(height: 10),
@@ -106,7 +105,7 @@ class ProductReportView extends StatelessWidget {
         ),
         Text(' = '),
         Text(
-          product.costStr.padRight(10, ' '),
+          product.totalCostStr.padRight(10, ' '),
           style: TextStyle(
             fontFamily: 'monospace',
             fontSize: 12,

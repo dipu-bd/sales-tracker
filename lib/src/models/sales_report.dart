@@ -22,8 +22,8 @@ class SalesReport extends Report<SalesRecord> {
     double cost = 0;
     double price = 0;
     for (final record in sales) {
-      cost += record.buyingPrice;
-      price += record.sellingPrice;
+      cost += record.totalCost;
+      price += record.totalPrice;
     }
     totalCost = cost;
     totalPrice = price;

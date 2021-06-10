@@ -142,8 +142,8 @@ class Repository {
     final doc = _products.doc(sales.productId);
     return doc.get().then((snapshot) {
       final product = snapshot.data()!;
-      assert(product.quantity >= sales.quantity);
-      doc.update({'quantity': product.quantity - sales.quantity});
+      assert(product.availableUnits >= sales.quantity);
+      doc.update({'units_sold': product.unitsSold + sales.quantity});
       return _sales.add(sales);
     });
   }

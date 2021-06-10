@@ -66,7 +66,7 @@ class ReportPageWidget<T extends Report> extends StatelessWidget {
   }
 
   Widget buildSaveAsPdfButton(BuildContext context, T report) {
-    if (report.totalItems == 0) {
+    if (report.totalUnits == 0) {
       return Container();
     }
     return ListTile(

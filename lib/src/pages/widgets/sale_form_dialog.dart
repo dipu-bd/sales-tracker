@@ -127,12 +127,9 @@ class SaleFormDialog extends StatelessWidget {
       textInputAction: TextInputAction.next,
       decoration: InputDecoration(
         labelText: 'Item Quantity',
-        helperText: '${product.quantity} items available',
+        helperText: '${product.availableUnits} items available',
       ),
-      onEditingComplete: () {
-        if (int.parse(quantityInput.text) > product.quantity) {
-          quantityInput.text = product.quantity.toString();
-        }
+      onSubmitted: (_) {
         FocusScope.of(context).nextFocus();
       },
       inputFormatters: [
@@ -162,9 +159,9 @@ class SaleFormDialog extends StatelessWidget {
     if (quantity == null || quantity < 0) {
       return _showError(context, 'Invalid Quantity');
     }
-    if (quantity > product.quantity) {
+    if (quantity > product.availableUnits) {
       return _showError(context,
-          'Insufficient Quantity. Maximum ${product.quantity} available.');
+          'Insufficient Quantity. Maximum ${product.availableUnits} available.');
     }
     if (unitPrice == null || unitPrice < 0) {
       return _showError(context, 'Invalid Price');
@@ -175,7 +172,7 @@ class SaleFormDialog extends StatelessWidget {
       product: product,
       date: date,
       quantity: quantity,
-      unitSellPrice: unitPrice,
+      unitPrice: unitPrice,
     );
 
     _confirmSale(context, record);

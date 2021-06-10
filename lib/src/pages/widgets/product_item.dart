@@ -32,7 +32,7 @@ class ProductItemTile extends StatelessWidget {
         buildDeleteAction(context),
         buildEditAction(context),
       ],
-      secondaryActions: product.quantity > 0
+      secondaryActions: product.availableUnits > 0
           ? <Widget>[
               buildSaleAction(context),
             ]
@@ -71,7 +71,7 @@ class ProductItemTile extends StatelessWidget {
     return CircleAvatar(
       backgroundColor: Colors.grey.shade300,
       child: Text(
-        '${product.quantity > 99 ? '99+' : product.quantity}',
+        '${product.availableUnits > 99 ? '99+' : product.availableUnits}',
         style: TextStyle(
           fontFamily: 'monospace',
           fontWeight: FontWeight.bold,
@@ -98,21 +98,28 @@ class ProductItemTile extends StatelessWidget {
 
   Widget buildPrice() {
     return Container(
-      constraints: BoxConstraints(
-        minWidth: 75,
-      ),
+      // constraints: BoxConstraints(
+      //   minWidth: 75,
+      // ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            product.costStr,
+            product.unitCostStr,
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.bold,
             ),
           ),
+          // Text(
+          //   '${product.availableUnits} × ${product.unitCostStr}',
+          //   style: TextStyle(
+          //     fontSize: 12,
+          //     color: Colors.grey,
+          //   ),
+          // ),
           Text(
-            '${product.quantity} × ${product.unitCostStr}',
+            'per unit',
             style: TextStyle(
               fontSize: 12,
               color: Colors.grey,
@@ -124,7 +131,7 @@ class ProductItemTile extends StatelessWidget {
   }
 
   void _saleProduct(BuildContext context) {
-    if (product.quantity > 0) {
+    if (product.availableUnits > 0) {
       SaleFormDialog.display(context, product);
     }
   }

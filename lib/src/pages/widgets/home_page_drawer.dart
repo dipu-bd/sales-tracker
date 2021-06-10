@@ -77,7 +77,9 @@ class HomePageDrawer extends StatelessWidget {
 
   Widget buildUserName() {
     final user = FirebaseAuth.instance.currentUser;
-    if (user?.displayName == null) return Container();
+    if (user?.displayName == null) {
+      return Container();
+    }
     return Text(
       user!.displayName!,
       textAlign: TextAlign.center,
@@ -133,7 +135,7 @@ class HomePageDrawer extends StatelessWidget {
       ),
       onTap: () async {
         await SalesReportPage.display(context);
-        Navigator.of(context).pop();
+        Navigator.of(context, rootNavigator: true).pop();
       },
     );
   }
@@ -146,9 +148,9 @@ class HomePageDrawer extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(5),
       ),
-      onTap: () {
-        Navigator.of(context).pop();
-        ProductFormDialog.display(context);
+      onTap: () async {
+        await ProductFormDialog.display(context);
+        Navigator.of(context, rootNavigator: true).pop();
       },
     );
   }
@@ -173,13 +175,15 @@ class HomePageDrawer extends StatelessWidget {
               TextButton(
                 child: Text('Continue'),
                 onPressed: () {
-                  Navigator.of(context).pop();
                   Repository.of(context).clearAllData();
+                  Navigator.of(context).pop();
                 },
               ),
               TextButton(
                 child: Text('Cancel'),
-                onPressed: () => Navigator.of(context).pop(),
+                onPressed: () {
+                  Navigator.of(context, rootNavigator: true).pop();
+                },
               ),
             ],
           ),

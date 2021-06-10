@@ -7,26 +7,26 @@ export 'package:sales_tracker/src/models/item.dart';
 class SalesRecord extends Item {
   late final String productId;
   late final String productName;
-  late final double unitBuyPrice;
-  late final double unitSellPrice;
+  late final double unitCost;
+  late final double unitPrice;
 
-  double get buyingPrice => quantity * unitBuyPrice;
+  double get totalCost => quantity * unitCost;
 
-  double get sellingPrice => quantity * unitSellPrice;
+  double get totalPrice => quantity * unitPrice;
 
-  double get profit => sellingPrice - buyingPrice;
+  double get profit => totalPrice - totalCost;
 
-  double get profitPerUnit => (sellingPrice - buyingPrice) / quantity;
+  double get profitPerUnit => (totalPrice - totalCost) / quantity;
 
   SalesRecord({
     required Product product,
-    required this.unitSellPrice,
+    required this.unitPrice,
     required int quantity,
     required DateTime date,
   })  : assert(product.id != null),
         productId = product.id!,
         productName = product.name,
-        unitBuyPrice = product.unitCost,
+        unitCost = product.unitCost,
         super(
           date: date,
           quantity: quantity,
@@ -36,28 +36,28 @@ class SalesRecord extends Item {
       : super.fromJson(id, data) {
     productId = data.remove('product_id');
     productName = data.remove('product_name');
-    unitBuyPrice = data.remove('buy_price');
-    unitSellPrice = data.remove('sell_price');
+    unitCost = data.remove('buy_price') ?? 0;
+    unitPrice = data.remove('sell_price') ?? 0;
   }
 
   Map<String, dynamic> toJson() {
     final data = super.toJson();
     data['product_id'] = productId;
     data['product_name'] = productName;
-    data['buy_price'] = unitBuyPrice;
-    data['sell_price'] = unitSellPrice;
+    data['buy_price'] = unitCost;
+    data['sell_price'] = unitPrice;
     return data;
   }
 }
 
 extension SalesRecordFormat on SalesRecord {
-  String get unitBuyPriceStr => formatCurrency(unitBuyPrice);
+  String get unitCostStr => formatCurrency(unitCost);
 
-  String get unitSellPriceStr => formatCurrency(unitSellPrice);
+  String get unitPriceStr => formatCurrency(unitPrice);
 
-  String get buyingPriceStr => formatCurrency(buyingPrice);
+  String get totalCostStr => formatCurrency(totalCost);
 
-  String get sellingPriceStr => formatCurrency(sellingPrice);
+  String get totalPriceStr => formatCurrency(totalPrice);
 
   String get profitStr => formatCurrency(profit);
 
