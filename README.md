@@ -2,17 +2,29 @@
 
 [![Flutter Release APK](https://github.com/dipu-bd/sales_tracker/actions/workflows/release-apk.yml/badge.svg)](https://github.com/dipu-bd/sales_tracker/actions/workflows/release-apk.yml)
 
-A generic sales tracking application
+A generic sales tracking application.
 
-## Getting Started
+## Development
 
 This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
+For help getting started with Flutter, view [online documentation](https://flutter.dev/docs), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+Firebase store: https://console.firebase.google.com/u/0/project/sales-tracker-dacab/firestore
+
+### Editing
+
+I prefer Android Studio or IntelliJ IDEA for editing. Visit 
+
+### Making New Release
+
+To make a new release commit and push your changes to github. Then add a new tag to the latest changes.
+
+```
+# Update pubspec.yaml with this version
+$ git tag v***
+$ git push --tags
+```
+
+[![v1.2.3+6](https://github.com/dipu-bd/sales_tracker/releases/download/v1.2.3%2B6/sales_tracker_v1.2.3_6-min.gif)](https://github.com/dipu-bd/sales_tracker/releases/tag/v1.2.3%2B6)
