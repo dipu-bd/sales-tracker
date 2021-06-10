@@ -1,4 +1,4 @@
-# sales_tracker
+# Sales Tracker
 
 [![Flutter Release APK](https://github.com/dipu-bd/sales_tracker/actions/workflows/release-apk.yml/badge.svg)](https://github.com/dipu-bd/sales_tracker/actions/workflows/release-apk.yml)
 
@@ -27,4 +27,6 @@ $ git tag v***
 $ git push --tags
 ```
 
-[![v1.2.3+6](https://github.com/dipu-bd/sales_tracker/releases/download/v1.2.3%2B6/sales_tracker_v1.2.3_6-min.gif)](https://github.com/dipu-bd/sales_tracker/releases/tag/v1.2.3%2B6)
+## Preview
+
+<img src="https://github.com/dipu-bd/sales_tracker/releases/download/v1.2.3%2B6/sales_tracker_v1.2.3_6-min.gif" height="800px">

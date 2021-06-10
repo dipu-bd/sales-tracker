@@ -88,6 +88,7 @@ class _ProductListViewState extends State<ProductListView> {
     return Container(
       padding: EdgeInsets.all(8.0),
       child: TextField(
+        autofocus: false,
         controller: filterInput,
         textInputAction: TextInputAction.search,
         onChanged: (text) {
