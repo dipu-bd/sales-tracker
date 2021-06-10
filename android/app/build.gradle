@@ -10,6 +10,11 @@ def keystoreProperties = new Properties()
 def keystorePropertiesFile = rootProject.file('key.properties')
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+} else {
+    keystoreProperties.setProperty('keyAlias', System.getenv('keyAlias'))
+    keystoreProperties.setProperty('keyPassword', System.getenv('keyPassword'))
+    keystoreProperties.setProperty('storeFile', System.getenv('storeFile'))
+    keystoreProperties.setProperty('storePassword', System.getenv('storePassword'))
 }
 
 def flutterRoot = localProperties.getProperty('flutter.sdk')
