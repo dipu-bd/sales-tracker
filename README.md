@@ -29,4 +29,4 @@ $ git push --tags
 
 ## Preview
 
-<img src="https://github.com/dipu-bd/sales_tracker/releases/download/v1.2.3%2B6/sales_tracker_v1.2.3_6-min.gif" height="800px">
+<img src="https://github.com/dipu-bd/sales_tracker/releases/download/v1.2.3%2B6/sales_tracker_v1.2.3_6-min.gif" height="800px" style="object-fit: contain; object-position: top center;">
